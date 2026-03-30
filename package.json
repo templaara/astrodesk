@@ -1,0 +1,19 @@
+{
+  "name": "astrodesk",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Sekhar chaudhary",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14",
+    "swisseph": "^0.5.17"
+  }
+}
