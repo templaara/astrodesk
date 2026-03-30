@@ -331,7 +331,291 @@ function getHouse(planetDegree, houseCusps) {
   }
   return null;
 }
+function getMoonNakshatraReport(nakshatra, pada) {
 
+  const reports = {
+
+    Ashwini: {
+      personality: "Fast, energetic, action-oriented ⚡",
+      mind: "Quick decisions, impatient",
+      career: "Entrepreneur, sports, startup",
+      love: "Fast attraction, जल्दी break",
+      strength: "Initiative power 🔥",
+      weakness: "Impulsiveness ⚠️",
+      lifePath: "Start things, lead from front"
+    },
+
+    Bharani: {
+      personality: "Intense, تحمل শক্তি বেশি 🔥",
+      mind: "Emotionally strong but दबाव में",
+      career: "Creative, management",
+      love: "Deep but possessive",
+      strength: "Endurance 💪",
+      weakness: "Emotional overload",
+      lifePath: "Transformation through pressure"
+    },
+
+    Krittika: {
+      personality: "Sharp, cutting thinker 🔪",
+      mind: "Critical, perfectionist",
+      career: "Leader, authority roles",
+      love: "Dominating nature",
+      strength: "Clarity",
+      weakness: "Harsh speech",
+      lifePath: "Remove negativity"
+    },
+
+    Rohini: {
+      personality: "Attractive, creative 🌸",
+      mind: "Comfort loving",
+      career: "Art, luxury, design",
+      love: "Romantic",
+      strength: "Charm",
+      weakness: "Attachment",
+      lifePath: "Material success"
+    },
+
+    Mrigashira: {
+      personality: "Curious, searching 🔍",
+      mind: "Restless",
+      career: "Research, travel",
+      love: "Unstable",
+      strength: "Exploration",
+      weakness: "Indecision",
+      lifePath: "Search for truth"
+    },
+
+    Ardra: {
+      personality: "Stormy, intense 🌧️",
+      mind: "Emotional chaos",
+      career: "Tech, transformation",
+      love: "Complicated",
+      strength: "Rebirth power",
+      weakness: "Depression risk",
+      lifePath: "Destroy → rebuild"
+    },
+
+    Punarvasu: {
+      personality: "Optimistic, comeback king 🌈",
+      mind: "Positive",
+      career: "Teaching, guidance",
+      love: "Stable",
+      strength: "Recovery power",
+      weakness: "Repeating mistakes",
+      lifePath: "Growth through cycles"
+    },
+
+    Pushya: {
+      personality: "Nurturing, teacher 👨‍🏫",
+      mind: "Stable",
+      career: "Education, support roles",
+      love: "Caring",
+      strength: "Support",
+      weakness: "Self-sacrifice",
+      lifePath: "Guide others"
+    },
+
+    Ashlesha: {
+      personality: "Deep, mysterious 🐍",
+      mind: "Psychological",
+      career: "Occult, strategy",
+      love: "Complex",
+      strength: "Mind control",
+      weakness: "Manipulation",
+      lifePath: "Inner mastery"
+    },
+
+    Magha: {
+      personality: "Royal, ego strong 👑",
+      mind: "Authority driven",
+      career: "Leadership",
+      love: "Dominant",
+      strength: "Pride",
+      weakness: "Ego",
+      lifePath: "Legacy building"
+    },
+
+    Purva_phalguni: {
+      personality: "Creative, pleasure loving 🎭",
+      mind: "Relaxed",
+      career: "Art, entertainment",
+      love: "Romantic",
+      strength: "Creativity",
+      weakness: "Laziness",
+      lifePath: "Enjoy life"
+    },
+
+    Uttara_Phalguni: {
+      personality: "Responsible, stable 🏠",
+      mind: "Balanced",
+      career: "Management",
+      love: "Stable",
+      strength: "Commitment",
+      weakness: "Rigidity",
+      lifePath: "Build stability"
+    },
+
+    Hasta: {
+      personality: "Skillful, smart 🤲",
+      mind: "Analytical",
+      career: "Coding, business",
+      love: "Practical",
+      strength: "Execution",
+      weakness: "Control issues",
+      lifePath: "Master skills"
+    },
+
+    Chitra: {
+      personality: "Designer, creator 🎨",
+      mind: "Perfectionist",
+      career: "Design, tech",
+      love: "High expectations",
+      strength: "Creativity",
+      weakness: "Restlessness",
+      lifePath: "Build something unique"
+    },
+
+    Swati: {
+      personality: "Independent 🌬️",
+      mind: "Free thinker",
+      career: "Business",
+      love: "Detached",
+      strength: "Freedom",
+      weakness: "Instability",
+      lifePath: "Self growth"
+    },
+
+    Vishakha: {
+      personality: "Goal focused 🎯",
+      mind: "Determined",
+      career: "Success driven",
+      love: "Intense",
+      strength: "Focus",
+      weakness: "Obsession",
+      lifePath: "Achieve goals"
+    },
+
+    Anuradha: {
+      personality: "Loyal 🤝",
+      mind: "Friendly",
+      career: "Team work",
+      love: "Stable",
+      strength: "Friendship",
+      weakness: "Dependency",
+      lifePath: "Relationships"
+    },
+
+    Jyeshtha: {
+      personality: "Powerful, dominant 🧠",
+      mind: "Control oriented",
+      career: "Authority",
+      love: "Complex",
+      strength: "Leadership",
+      weakness: "Jealousy",
+      lifePath: "Handle power"
+    },
+
+    Mula: {
+      personality: "Root seeker 🌱",
+      mind: "Deep thinker",
+      career: "Research",
+      love: "Extreme",
+      strength: "Truth finding",
+      weakness: "Destruction",
+      lifePath: "Break illusions"
+    },
+
+    Purva_Ashadha: {
+      personality: "Winning mindset 🏆",
+      mind: "Confident",
+      career: "Public success",
+      love: "Strong attraction",
+      strength: "Victory",
+      weakness: "Overconfidence",
+      lifePath: "Win in life"
+    },
+
+    Uttara_Ashadha: {
+      personality: "Stable success 🏔️",
+      mind: "Strong",
+      career: "Long-term success",
+      love: "Serious",
+      strength: "Persistence",
+      weakness: "Slow progress",
+      lifePath: "Permanent success"
+    },
+
+    Shravana: {
+      personality: "Listener 👂",
+      mind: "Learning",
+      career: "Teaching",
+      love: "Understanding",
+      strength: "Knowledge",
+      weakness: "Overthinking",
+      lifePath: "Learn & teach"
+    },
+
+    Dhanishta: {
+      personality: "Rich mindset 💰",
+      mind: "Rhythmic",
+      career: "Finance, music",
+      love: "Balanced",
+      strength: "Wealth",
+      weakness: "Materialism",
+      lifePath: "Success & wealth"
+    },
+
+    Shatabhisha: {
+      personality: "Healer 🌌",
+      mind: "Isolated",
+      career: "Healing, tech",
+      love: "Detached",
+      strength: "Healing",
+      weakness: "Loneliness",
+      lifePath: "Serve humanity"
+    },
+
+    Purva_Bhadrapada: {
+      personality: "Extreme thinker 🔥",
+      mind: "Intense",
+      career: "Philosophy",
+      love: "Complex",
+      strength: "Depth",
+      weakness: "Dual nature",
+      lifePath: "Balance extremes"
+    },
+
+    Uttara_Bhadrapada: {
+      personality: "Calm wisdom 🌊",
+      mind: "Deep calm",
+      career: "Spiritual",
+      love: "Stable",
+      strength: "Peace",
+      weakness: "Isolation",
+      lifePath: "Inner peace"
+    },
+
+    Revati: {
+      personality: "Soft, spiritual 🌸",
+      mind: "Compassionate",
+      career: "Helping others",
+      love: "Gentle",
+      strength: "Kindness",
+      weakness: "Escapism",
+      lifePath: "Guide others"
+    }
+  };
+
+  return reports[nakshatra] || {
+    personality: "Unique personality",
+    mind: "Balanced",
+    career: "General",
+    love: "Normal",
+    strength: "Mixed",
+    weakness: "Mixed",
+    lifePath: "Self discovery"
+  };
+}
 function getNakshatraMeaning(nakshatra) {
   const meanings = {
     "Ashwini": "Fast, energetic, healer type",
@@ -451,7 +735,8 @@ async function calculateKundali({ date, time, lat, lon }) {
 
         nakshatraMeaning: getNakshatraMeaning(nak.nakshatra),
         padaMeaning: getPadaMeaning(nak.pada),
-        prediction: getPlanetNakshatraPrediction(key, nak.nakshatra)
+        prediction: getPlanetNakshatraPrediction(key, nak.nakshatra),
+        
       };
     }
    
@@ -473,6 +758,10 @@ async function calculateKundali({ date, time, lat, lon }) {
     // 🔥 Rahu → Ketu
     const rahuDeg = parseFloat(result.RAHU.degree);
     const ketuDeg = getKetu(rahuDeg);
+    const moonReport = getMoonNakshatraReport(
+        result.MOON.nakshatra,
+        result.MOON.pada
+    );
     return {
       ascendant: houseData.ascendant.toFixed(2),
       houses: houseData.houses,
@@ -491,6 +780,7 @@ async function calculateKundali({ date, time, lat, lon }) {
          rahu: result.RAHU.house,
          ketuDegree: ketuDeg.toFixed(2)
       },
+      moonReport
 
     //   nakshatra: nak.nakshatra,
     //   pada: nak.pada,
