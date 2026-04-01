@@ -1,11 +1,44 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { calculateKundali } = require('./astro');
+const { generateAIResponse } = require("./services/aiService");
 
 const app = express();
 app.use(bodyParser.json());
+// app.post("/kundali", async (req, res) => {
+//   try {
 
-app.post('/kundali', async (req, res) => {
+//     // 🔥 STEP A: Kundali calculate
+//     const kundali = await calculateKundali(req.body);
+
+//     // 🔥 STEP B: AI call (NEW)
+//     const aiPrediction = await generateAIResponse(kundali);
+
+//     // 🔥 STEP C: Response send
+//     res.json({
+//       ...kundali,
+//       aiPrediction
+//     });
+
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+app.post("/kundali", async (req, res) => {
+  try {
+    const kundali = await calculateKundali(req.body);
+    const aiPrediction = await generateAIResponse(kundali);
+
+    res.json({
+      ...kundali,
+      aiPrediction
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+app.post('/kundalis', async (req, res) => {
   try {
     const { date, time, lat, lon } = req.body;
 
@@ -27,6 +60,18 @@ app.post('/kundali', async (req, res) => {
     res.status(500).json({ error: err.toString() });
   }
 });
+
+//get api
+app.get('/', async (req, res) => {
+  try {
+    res.status(200).json({ message: "Welcome to the Kundali API. Please use POST /kundali to calculate your Kundali." });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.toString() });
+  }
+});
+
 
 app.listen(3000, () => {
   console.log("🚀 Server running on port 3000");

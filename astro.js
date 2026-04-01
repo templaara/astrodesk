@@ -725,7 +725,7 @@ async function calculateKundali({ date, time, lat, lon }) {
       result[key] = {
         degree: degree.toFixed(2),
         rashi: getRashi(degree),
-        house: getHouse(degree, houseData.houses), // ✅ fixed
+        house: getHouse(degree, houseData.houses), //  fixed
         retrograde: pos.speed < 0,
 
         strength: getPlanetStrength(key, getRashi(degree), getHouse(degree, houseData.houses)),
