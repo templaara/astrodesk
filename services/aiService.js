@@ -4,7 +4,11 @@ async function generateAIResponse(kundali) {
   try {
 
     const prompt = `
-You are a Vedic astrologer.
+তুমি একজন অভিজ্ঞ বৈদিক জ্যোতিষী।
+
+নিচের কুণ্ডলী বিশ্লেষণ করে সম্পূর্ণ খাঁটি বাংলায় (শুধু বাংলা ভাষায়) উত্তর দাও।
+
+কোনো English বা Banglish ব্যবহার করবে না।
 
 কুণ্ডলী তথ্য:
 
@@ -27,24 +31,28 @@ Mental State: ${kundali.mentalState}
 5. Marriage
 6. Advice
 
-Make it natural, human-like.
-`;
 
-    console.log("🚀 Calling Ollama...");
+উত্তর যেন স্বাভাবিক, মানুষের মতো, পরিষ্কার বাংলায় হয়।
+`;
+//Make it natural, human-like.
+    console.log(" Calling Ollama...");
 
     const res = await axios.post("http://127.0.0.1:11434/api/generate", {
-      //model: "llama3:latest", // 🔥 FIXED
-      model: "mistral",
+      model: "llama3:latest", //  FIXED
+      //model: "mistral",
       prompt,
       stream: false
+    },
+    {
+        timeout: 60000 // (60 sec)
     });
 
     return res.data.response;
 
   } catch (err) {
-    console.log("❌ AI ERROR:", err.response?.data || err.message);
+    console.log("AI ERROR:", err.response?.data || err.message);
 
-    return "AI generate করতে সমস্যা হয়েছে ❌";
+    return "AI generate করতে সমস্যা হয়েছে ";
   }
 }
 

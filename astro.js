@@ -316,6 +316,91 @@ function getKetu(rahuDegree) {
   let ketu = (rahuDegree + 180) % 360;
   return ketu;
 }
+//dasha anter dasha calculation 
+// 🔥 Dasha Order
+const dashaOrder = [
+  "Ketu","Venus","Sun","Moon","Mars",
+  "Rahu","Jupiter","Saturn","Mercury"
+];
+
+const dashaYears = {
+  Ketu: 7,
+  Venus: 20,
+  Sun: 6,
+  Moon: 10,
+  Mars: 7,
+  Rahu: 18,
+  Jupiter: 16,
+  Saturn: 19,
+  Mercury: 17
+};
+
+// 🔥 Balance calculation
+function getDashaBalance(moonDegree) {
+  const nakSize = 13.3333;
+  const used = moonDegree % nakSize;
+  const remaining = nakSize - used;
+  return remaining / nakSize;
+}
+
+// 🔥 Antardasha
+function generateAntardasha(mainPlanet, mainYears, startYear) {
+  const subPeriods = [];
+  let current = startYear;
+
+  for (let sub of dashaOrder) {
+    const subYears = (mainYears * dashaYears[sub]) / 120;
+
+    subPeriods.push({
+      planet: `${mainPlanet}/${sub}`,
+      start: Math.floor(current),
+      end: Math.floor(current + subYears)
+    });
+
+    current += subYears;
+  }
+
+  return subPeriods;
+}
+
+// 🔥 Full Dasha
+function generateFullDasha(moonNakshatraLord, moonDegree) {
+  const startIndex = dashaOrder.indexOf(moonNakshatraLord);
+
+  const balance = getDashaBalance(moonDegree);
+
+  let timeline = [];
+  let currentYear = new Date().getFullYear();
+
+  for (let i = 0; i < 9; i++) {
+    const planet = dashaOrder[(startIndex + i) % 9];
+
+    let years = dashaYears[planet];
+
+    if (i === 0) {
+      years = years * balance;
+    }
+
+    const endYear = currentYear + years;
+
+    const antardasha = generateAntardasha(
+      planet,
+      years,
+      currentYear
+    );
+
+    timeline.push({
+      planet,
+      start: Math.floor(currentYear),
+      end: Math.floor(endYear),
+      antardasha
+    });
+
+    currentYear = endYear;
+  }
+
+  return timeline;
+}
 
 // House detect
 function getHouse(planetDegree, houseCusps) {
@@ -707,11 +792,34 @@ async function calculateKundali({ date, time, lat, lon }) {
     const dob = new Date(`${date}T${time}+05:30`);
 
     const jd = toJulianDate(dob);
+    function getAscendant(jd, lat, lon) {
+      return new Promise((resolve, reject) => {
+        swisseph.swe_houses(jd, lat, lon, 'P', (res) => {
+          if (res.error) return reject(res.error);
 
-    const houseData = await getHouses(jd, lat, lon);
+          const asc = res.ascendant || (res.ascmc ? res.ascmc[0] : null);
 
+          if (!asc) return reject("Ascendant not found");
+
+          resolve(asc);
+        });
+      });
+    }
+    //const houseData = await getHouses(jd, lat, lon);
+     function getHouseFromSign(planetDegree, ascDegree) {
+        const signs = [
+          "Aries","Taurus","Gemini","Cancer",
+          "Leo","Virgo","Libra","Scorpio",
+          "Sagittarius","Capricorn","Aquarius","Pisces"
+        ];
+
+        const planetSignIndex = Math.floor(planetDegree / 30);
+        const ascSignIndex = Math.floor(ascDegree / 30);
+
+        return (planetSignIndex - ascSignIndex + 12) % 12 + 1;
+      }
     const result = {};
-
+ const ascDegree = await getAscendant(jd, lat, lon);
     for (let key in planets) {
       const pos = await getPlanetPosition(jd, planets[key]);
 
@@ -721,14 +829,20 @@ async function calculateKundali({ date, time, lat, lon }) {
 
       const degree = pos.longitude;
       const nak = getNakshatraDetails(degree);
+      //const ascDegree = houseData.ascendant;
+     
+      const house = getHouseFromSign(degree, ascDegree);
 
       result[key] = {
         degree: degree.toFixed(2),
         rashi: getRashi(degree),
-        house: getHouse(degree, houseData.houses), //  fixed
+        //house: getHouse(degree, houseData.houses), //  fixed
+        house: house,
         retrograde: pos.speed < 0,
 
-        strength: getPlanetStrength(key, getRashi(degree), getHouse(degree, houseData.houses)),
+        strength: getPlanetStrength(key, getRashi(degree),house,
+        // getHouse(degree, houseData.houses)
+       ),
         nakshatra: nak.nakshatra,
         pada: nak.pada,
         nakshatraLord: nak.lord,
@@ -758,13 +872,20 @@ async function calculateKundali({ date, time, lat, lon }) {
     // 🔥 Rahu → Ketu
     const rahuDeg = parseFloat(result.RAHU.degree);
     const ketuDeg = getKetu(rahuDeg);
+
+    // 🔥 DASHA ADD
+    const moonDegree = parseFloat(result.MOON.degree);
+    const moonLord = result.MOON.nakshatraLord;
+
+    const dasha = generateFullDasha(moonLord, moonDegree);
+
     const moonReport = getMoonNakshatraReport(
         result.MOON.nakshatra,
         result.MOON.pada
     );
     return {
-      ascendant: houseData.ascendant.toFixed(2),
-      houses: houseData.houses,
+      ascendant: ascDegree.toFixed(2),
+      //houses: houseData.houses,
       planets: result,
 
       stellium,
@@ -780,7 +901,8 @@ async function calculateKundali({ date, time, lat, lon }) {
          rahu: result.RAHU.house,
          ketuDegree: ketuDeg.toFixed(2)
       },
-      moonReport
+      moonReport,
+      dasha
 
     //   nakshatra: nak.nakshatra,
     //   pada: nak.pada,

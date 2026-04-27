@@ -2,9 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { calculateKundali } = require('./astro');
 const { generateAIResponse } = require("./services/aiService");
+const cors = require("cors");
+
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors()); 
 // app.post("/kundali", async (req, res) => {
 //   try {
 
@@ -73,6 +76,6 @@ app.get('/', async (req, res) => {
 });
 
 
-app.listen(3000, () => {
-  console.log("🚀 Server running on port 3000");
+app.listen(5000, () => {
+  console.log("🚀 Server running on port 5000");
 });
